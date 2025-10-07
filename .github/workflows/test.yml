@@ -8,13 +8,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    env:
-      RAILS_ENV: test
-
     strategy:
       fail-fast: false
       matrix:
-        db_gem: sqlite3
+        db_gem: [sqlite3]
         ruby:
           # - 2.5
           # - 2.6
@@ -27,7 +24,7 @@ jobs:
           # - 7.0
           - 7.1
           - 7.2
-          - 8.0
+          - '8.0'
         include:
           # - ruby: 3.2
           #   rails: 7.2
@@ -36,9 +33,10 @@ jobs:
             rails: 7.2
             db_gem: pg
           - ruby: 3.2
-            rails: 8.2
+            rails: 8.0
             db_gem: pg
     env:
+      RAILS_ENV: test
       BUNDLE_WITHOUT: lint
       BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/rails_${{ matrix.rails }}_${{ matrix.db_gem }}.gemfile
 
@@ -59,7 +57,13 @@ jobs:
         ports: ['5432:5432']
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
+
+    - name: Install ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: "${{ matrix.ruby }}"
+        bundler-cache: true
 
     - name: Set env DATABASE_URL
       run: |
@@ -68,17 +72,6 @@ jobs:
         elif [[ "${{ matrix.db_gem }}" == 'pg' ]]; then
           echo "DATABASE_URL=postgres://postgres:password@localhost:5432/test" >> "$GITHUB_ENV"
         fi
-
-    - name: Set env variables
-      run: |
-        echo "RAILS_VERSION=${{ matrix.rails_version }}" >> "$GITHUB_ENV"
-        echo "DB_GEM=${{ matrix.db_gem }}" >> "$GITHUB_ENV"
-
-    - name: Install ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: "${{ matrix.ruby }}"
-        bundler-cache: true
 
     - name: Run test
       run: |
