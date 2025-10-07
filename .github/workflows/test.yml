@@ -33,7 +33,7 @@ jobs:
             rails: 7.2
             db_gem: pg
           - ruby: 3.2
-            rails: 8.0
+            rails: '8.0'
             db_gem: pg
     env:
       RAILS_ENV: test

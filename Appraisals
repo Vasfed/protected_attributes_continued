@@ -36,4 +36,9 @@ appraise "rails_8.0_sqlite3" do
   gem "sqlite3"
 end
 
+appraise "rails_8.0_pg" do
+  gem "rails", "~>8.0.1"
+  gem "pg"
+end
+
 # NB: after adding appraisals do `appraisal bundle lock --add-platform x86_64-linux` for CI
