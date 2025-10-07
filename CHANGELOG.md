@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-* Nothing yet
+* Fixed tests on rails 7.2
+* Bring back testing with appraisal
 * [View Full Diff](https://github.com/westonganger/protected_attributes_continued/compare/v1.9.0...master)
 
 ## v1.9.0 - 2023-10-17
