@@ -11,7 +11,9 @@ module ActionController
         return super if @include_set
 
         m = model
-        synchronize do
+        mutex = @mutex
+        mutex = self if ActiveRecord.gem_version < Gem::Version.new('7.2')
+        mutex.synchronize do
           return super if @include_set
 
           @include_set = true
