@@ -27,13 +27,16 @@ jobs:
           # - 7.0
           - 7.1
           - 7.2
-          # - 8.0
+          - 8.0
         include:
           # - ruby: 3.2
           #   rails: 7.2
           #   db_gem: mysql2
           - ruby: 3.2
             rails: 7.2
+            db_gem: pg
+          - ruby: 3.2
+            rails: 8.2
             db_gem: pg
     env:
       BUNDLE_WITHOUT: lint
