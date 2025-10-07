@@ -14,29 +14,30 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        db_gem: sqlite3
+        ruby:
+          # - 2.5
+          # - 2.6
+          # - 2.7
+          # - 2.7
+          - 3.2
+          # - 3.3
+          # - 3.4
+        rails:
+          # - 7.0
+          - 7.1
+          - 7.2
+          # - 8.0
         include:
-          ### TEST RUBY VERSIONS
-          - ruby: "2.5"
-          - ruby: "2.6"
-          - ruby: "2.7"
-          - ruby: "3.0"
-          - ruby: "3.1"
-          - ruby: "3.2"
-          - ruby: "3.3"
-          ### TEST RAILS VERSIONS
-          - ruby: "2.6"
-            rails_version: "~> 5.1"
-          - ruby: "2.6"
-            rails_version: "~> 5.2"
-          - ruby: "2.6"
-            rails_version: "~> 6.0"
-          - ruby: "2.6"
-            rails_version: "~> 6.1"
-          ### TEST NON-DEFAULT DATABASES
-          - ruby: "3.3"
-            db_gem: "mysql2"
-          - ruby: "3.3"
-            db_gem: "pg"
+          # - ruby: 3.2
+          #   rails: 7.2
+          #   db_gem: mysql2
+          - ruby: 3.2
+            rails: 7.2
+            db_gem: pg
+    env:
+      BUNDLE_WITHOUT: lint
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/rails_${{ matrix.rails }}_${{ matrix.db_gem }}.gemfile
 
     services:
       mysql:
@@ -69,15 +70,13 @@ jobs:
       run: |
         echo "RAILS_VERSION=${{ matrix.rails_version }}" >> "$GITHUB_ENV"
         echo "DB_GEM=${{ matrix.db_gem }}" >> "$GITHUB_ENV"
-        echo "DB_GEM_VERSION=${{ matrix.db_gem_version }}" >> "$GITHUB_ENV"
 
     - name: Install ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: "${{ matrix.ruby }}"
-        bundler-cache: false ### not compatible with ENV-style Gemfile
+        bundler-cache: true
 
     - name: Run test
       run: |
-        bundle install
         bundle exec rake test
