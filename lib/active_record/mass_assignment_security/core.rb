@@ -11,7 +11,7 @@ module ActiveRecord
         initialize_internals_callback
 
         # +options+ argument is only needed to make protected_attributes gem easier to hook.
-        init_attributes(attributes, options) if attributes
+        assign_attributes(attributes, options) if attributes
 
         yield self if block_given?
         _run_initialize_callbacks
@@ -19,8 +19,11 @@ module ActiveRecord
 
       private
 
-      def init_attributes(attributes, options)
-        assign_attributes(attributes, options)
+      if ActiveRecord.gem_version < Gem::Version.new('7.2')
+        # unsure if needed
+        def init_attributes(attributes, options = {})
+          assign_attributes(attributes, options)
+        end
       end
 
       def init_internals

@@ -28,4 +28,8 @@ class AssociationRelationTest < ActiveSupport::TestCase
     membership = group.memberships.where(pirate_id: 1).create!
     assert_equal(1, membership.pirate_id)
   end
+
+  test "dup works" do
+    assert_nothing_raised { Group.create!.dup }
+  end
 end
